@@ -25,6 +25,8 @@ namespace Stories
 
         public Interaction Interaction { get; private set; }
 
+        public uint Cost { get; }
+
         internal Storylet(
             string id,
             Descriptor descriptor,
@@ -34,12 +36,14 @@ namespace Stories
             Timing timing = Timing.Repeteable,
             PotencialUser potencialUser = PotencialUser.Any,
             RoleScope roleScope = RoleScope.Any,
+            uint cost = 1,
             uint overridePriority = 0)
             : base(id)
         {
             this.descriptor = descriptor;
             this.potencialUser = potencialUser;
             this.roleScope = roleScope;
+            this.Cost = cost;
             this.timing = timing;
             this.overridePriority = overridePriority;
 

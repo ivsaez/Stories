@@ -27,6 +27,8 @@ namespace Stories
         bool MetsHistoricGlobalConditions(Historic historic);
 
         bool MetsHistoricRolledConditions(Historic historic, Roles roles);
+
+        uint Cost { get; }
     }
 
     public delegate bool EnvironmentPreconditions(World world);

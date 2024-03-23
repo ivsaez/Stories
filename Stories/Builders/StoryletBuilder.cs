@@ -12,6 +12,7 @@ namespace Stories.Builders
         private PotencialUser potencialUser;
         private RoleScope roleScope;
         private Interaction? interaction;
+        private uint cost;
         private uint overridePriority;
 
         private StoryletBuilder(string id) 
@@ -23,6 +24,7 @@ namespace Stories.Builders
             timing = Timing.Repeteable;
             potencialUser = PotencialUser.Any;
             roleScope = RoleScope.Any;
+            cost = 1;
             overridePriority = 0;
         }
 
@@ -121,6 +123,14 @@ namespace Stories.Builders
             return this;
         }
 
+        public StoryletBuilder WithCost(uint cost)
+        {
+            this.cost = cost;
+            return this;
+        }
+
+        public StoryletBuilder WithoutCost() => WithCost(0);
+
         public InteractionBuilder WithInteraction(ExecutionFunction function)
         {
             var counter = new InteractionCounter(id);
@@ -148,8 +158,10 @@ namespace Stories.Builders
                 preconditions, 
                 interaction, 
                 timing, 
-                potencialUser, 
-                roleScope);
+                potencialUser,
+                roleScope,
+                cost,
+                overridePriority > 0 ? overridePriority : 0);
         }
     }
 }
