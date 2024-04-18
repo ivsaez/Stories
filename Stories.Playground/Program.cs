@@ -24,11 +24,11 @@ var world = new World(MachineBuilder.Create()
     .EndState()
     .Build());
 
-var agent = new WorldAgent("tobias", "Tobias", "Andrion", Importance.Main);
+var agent = new StoriesAgent("tobias", "Tobias", "Andrion", Importance.Main);
 world.Agents.Add(agent);
 
-var mapped = new WorldMapped("place", new Articler(Genere.Femenine, Number.Singular));
-var room = new WorldMapped("room", new Articler(Genere.Femenine, Number.Singular));
+var mapped = new StoriesMapped("place", Externality.Internal, new Articler(Genere.Femenine, Number.Singular));
+var room = new StoriesMapped("room", Externality.Internal, new Articler(Genere.Femenine, Number.Singular));
 world.Map.Add(mapped);
 world.Map.Add(room);
 world.Map.Connect(mapped, room, Direction.East_West);
