@@ -1,4 +1,6 @@
 ﻿using Agents;
+using ClimaticsLang;
+using ClimaticsLang.Lang;
 using Items;
 using ItemsLang.Lang;
 using Languager;
@@ -23,6 +25,9 @@ var world = new World(MachineBuilder.Create()
     .WithState("Initial")
     .EndState()
     .Build());
+
+var timeDescriptor = new TimeDescriptor(world.Time);
+Console.WriteLine(timeDescriptor.RandomExternalDescription);
 
 var agent = new StoriesAgent("tobias", "Tobias", "Andrion", Importance.Main);
 world.Agents.Add(agent);
@@ -103,6 +108,7 @@ void configureDictionary()
     var dictionary = new Dictionary(lang);
     dictionary.Load(new PlaygroundDictionaryProvider());
     dictionary.Load(new ItemsDictionaryProvider());
+    dictionary.Load(new ClimaticsDictionaryProvider());
 
     Translator.Instance.Dictionary = dictionary;
 }
