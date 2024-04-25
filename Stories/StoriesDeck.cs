@@ -84,6 +84,8 @@ namespace Stories
     {
         private readonly List<RolledStorylet> rolledStorylets;
 
+        public bool IsEmpty => !rolledStorylets.Any();
+
         public RolledStories()
         {
             rolledStorylets = new List<RolledStorylet>();
