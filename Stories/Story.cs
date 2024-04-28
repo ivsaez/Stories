@@ -33,6 +33,17 @@ namespace Stories
             }
         } 
 
+        public IAgent Answerer
+        {
+            get
+            {
+                if (actualExecution is null)
+                    return roles.Get<IAgent>(initial.Driver);
+
+                return roles.Get<IAgent>(actualExecution.Answerer);
+            }
+        }
+
         public Step Interact(Input input)
         {
             if (actualExecution is null && input.IsVoid)

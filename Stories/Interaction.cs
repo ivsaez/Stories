@@ -32,6 +32,17 @@ namespace Stories
 
         public string Driver { get; private set; }
 
+        public string Answerer
+        {
+            get
+            {
+                if (nexts is null || !nexts.Any())
+                    return Driver;
+
+                return nexts.First().Driver;
+            }
+        }
+
         public Choices Choices<A, I, M>(Roles roles,
             Existents<A, I, M> existents)
             where A : IAgent, ISavable, ICloneable
