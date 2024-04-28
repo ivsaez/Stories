@@ -20,6 +20,9 @@ namespace Stories
             this.participants = participants.ToList();
         }
 
+        public Snapshot(string id, params string[] participants)
+            : this(id, (IEnumerable<string>)participants) {}
+
         public bool HasParticipant(string participant) =>
             participants.Contains(participant);
 
