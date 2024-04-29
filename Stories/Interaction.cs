@@ -53,7 +53,8 @@ namespace Stories
                 (choices, interaction) => 
                     choices.With(
                         new InteractionDescriptor(interaction).MatchedDescription(roles, existents), 
-                        () => interaction));
+                        () => interaction,
+                        Storylet.LowestPriority));
 
 
         public Output Execute(World world, Roles roles) =>
