@@ -21,7 +21,7 @@ namespace Stories
 
         public EnvironmentPreconditions EnvironmentPreconditions { get; }
 
-        public Preconditions ParticularPreconditions { get; }
+        public ParticularPreconditions ParticularPreconditions { get; }
 
         public Interaction Interaction { get; private set; }
 
@@ -31,7 +31,7 @@ namespace Stories
             string id,
             Descriptor descriptor,
             EnvironmentPreconditions environmentPreconditions,
-            Preconditions particularPreconditions,
+            ParticularPreconditions particularPreconditions,
             Interaction rootInteraction,
             Timing timing = Timing.Repeteable,
             PotencialUser potencialUser = PotencialUser.Any,

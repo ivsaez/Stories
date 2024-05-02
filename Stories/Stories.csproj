@@ -12,7 +12,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/ivsaez/Stories</RepositoryUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>1.4.2</Version>
+    <Version>1.5.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,7 +34,7 @@
     <PackageReference Include="isz-Outputer" Version="2.4.1" />
     <PackageReference Include="isz-Rolling" Version="1.5.0" />
     <PackageReference Include="isz-RollingLang" Version="1.1.1" />
-    <PackageReference Include="isz-Worlding" Version="1.9.1" />
+    <PackageReference Include="isz-Worlding" Version="1.10.0" />
   </ItemGroup>
 
 </Project>

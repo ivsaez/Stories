@@ -7,7 +7,7 @@ namespace Stories.Builders
         private readonly string id;
         private Descriptor descriptor;
         private EnvironmentPreconditions environmentPreconditions;
-        private Preconditions preconditions;
+        private ParticularPreconditions preconditions;
         private Timing timing;
         private PotencialUser potencialUser;
         private RoleScope roleScope;
@@ -20,7 +20,7 @@ namespace Stories.Builders
             this.id = id;
             descriptor = Descriptor.Empty;
             environmentPreconditions = (world) => true;
-            preconditions = (world, roles, historic) => true;
+            preconditions = (pre) => true;
             timing = Timing.Repeteable;
             potencialUser = PotencialUser.Any;
             roleScope = RoleScope.Any;
@@ -45,7 +45,7 @@ namespace Stories.Builders
             return this;
         }
 
-        public StoryletBuilder WithPreconditions(Preconditions preconditions)
+        public StoryletBuilder WithPreconditions(ParticularPreconditions preconditions)
         {
             this.preconditions = preconditions;
             return this;

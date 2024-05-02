@@ -10,7 +10,7 @@ namespace Stories
     {
         EnvironmentPreconditions EnvironmentPreconditions { get; }
 
-        Preconditions ParticularPreconditions { get; }
+        ParticularPreconditions ParticularPreconditions { get; }
 
         Interaction Interaction { get; }
 
@@ -31,8 +31,8 @@ namespace Stories
         uint Cost { get; }
     }
 
-    public delegate bool EnvironmentPreconditions(World world);
-    public delegate bool Preconditions(World world, Roles roles, Historic historic);
+    public delegate bool EnvironmentPreconditions(EnvPredefinedPreconditions pre);
+    public delegate bool ParticularPreconditions(PredefinedPreconditions pre);
 
     public enum Timing
     {

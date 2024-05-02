@@ -34,7 +34,7 @@ namespace Stories
 
             foreach (var storylet in storylets
                 .Where(s => s.MetsHistoricGlobalConditions(historic))
-                .Where(s => s.EnvironmentPreconditions(world)))
+                .Where(s => s.EnvironmentPreconditions(new EnvPredefinedPreconditions(world))))
             {
                 selectedStorylets.Add(storylet);
             }
@@ -71,7 +71,7 @@ namespace Stories
                 foreach (var roles in permutations.Roles)
                 {
                     if (storylet.MetsHistoricRolledConditions(historic, roles) 
-                        && storylet.ParticularPreconditions(world, roles, historic))
+                        && storylet.ParticularPreconditions(new PredefinedPreconditions(world, roles, historic)))
                         selectedStorylets.Add(storylet, roles);
                 }
             }

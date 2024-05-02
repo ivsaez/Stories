@@ -63,14 +63,7 @@ var movement = StoryletBuilder.Create("movement")
     .BeingGlobalSingle()
     .ForMachines()
     .WithDescriptor("place")
-    .WithPreconditions((world, roles, historic) =>
-    {
-        var main = roles.Get<IWorldAgent>(Descriptor.MainRole);
-        var origin = world.Map.GetUbication(main);
-        var destination = roles.Get<IWorldMapped>("place");
-
-        return origin.Exits.Has(destination);
-    })
+    .WithPreconditions((pre) => pre.IsExit("place"))
     .WithInteraction((world, roles) =>
     {
         var main = roles.Get<IWorldAgent>(Descriptor.MainRole);
