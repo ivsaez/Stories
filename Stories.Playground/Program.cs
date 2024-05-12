@@ -43,17 +43,17 @@ var storylet = StoryletBuilder.Create("test")
     .BeingGlobalSingle()
     .ForMachines()
     .WithAgentsScope()
-    .WithInteraction((world, roles) => Output.FromTexts("ejecucion_1".trans()))
-        .WithSubinteraction((world, roles) => Output.FromTexts("ejecucion_11".trans()))
-            .WithSubinteraction((world, roles) => Output.FromTexts("ejecucion_111".trans()))
+    .WithInteraction((post) => Output.FromTexts("ejecucion_1".trans()))
+        .WithSubinteraction((post) => Output.FromTexts("ejecucion_11".trans()))
+            .WithSubinteraction((post) => Output.FromTexts("ejecucion_111".trans()))
             .Build()
-            .WithSubinteraction((world, roles) => Output.FromTexts("ejecucion_112".trans()))
+            .WithSubinteraction((post) => Output.FromTexts("ejecucion_112".trans()))
             .Build()
         .Build()
-        .WithSubinteraction((world, roles) => Output.FromTexts("ejecucion_12".trans()))
-            .WithSubinteraction((world, roles) => Output.FromTexts("ejecucion_121".trans()))
+        .WithSubinteraction((post) => Output.FromTexts("ejecucion_12".trans()))
+            .WithSubinteraction((post) => Output.FromTexts("ejecucion_121".trans()))
             .Build()
-            .WithSubinteraction((world, roles) => Output.FromTexts("ejecucion_122".trans()))
+            .WithSubinteraction((post) => Output.FromTexts("ejecucion_122".trans()))
             .Build()
         .Build()
     .SetAsRoot()
@@ -64,11 +64,11 @@ var movement = StoryletBuilder.Create("movement")
     .ForMachines()
     .WithDescriptor("place")
     .WithPreconditions((pre) => pre.IsExit("place"))
-    .WithInteraction((world, roles) =>
+    .WithInteraction((post) =>
     {
-        var main = roles.Get<IWorldAgent>(Descriptor.MainRole);
-        var origin = world.Map.GetUbication(main);
-        var destination = roles.Get<IWorldMapped>("place");
+        var main = post.Main;
+        var origin = post.MainPlace;
+        var destination = post.Mapped("place");
         var movementResult = world.Map.Move(main, origin, destination, world.Items);
 
         return Output.FromTexts("movement_execution".trans(main.Name, new MappedDescriptor(destination).ArticledName));

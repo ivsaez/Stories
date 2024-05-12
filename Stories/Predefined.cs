@@ -2,22 +2,48 @@
 using Agents;
 using Agents.Extensions;
 using Identification;
+using Logic;
 using Rolling;
 using Worlding;
 
 namespace Stories
 {
-    public class PredefinedPreconditions
+    public abstract class Predefined
     {
         public World World { get; }
         public Roles Roles { get; }
         public Historic Historic { get; }
 
-        public PredefinedPreconditions(World world, Roles roles, Historic historic)
+        public Predefined(World world, Roles roles, Historic historic)
         {
             World = world;
             Roles = roles;
             Historic = historic;
+        }
+
+        public bool HasHappened(string story, params string[] roles) =>
+            Historic.HasHappened(new Snapshot(story, roles.Select(r => Roles.Get(r)!.Id)));
+
+        public bool IsKnown(string function, params string[] individuals)
+        {
+            if (individuals.Length > 2)
+                throw new ArgumentException("A function cannot have more than 2 individuals.");
+
+            var sentence = individuals.Length == 0
+                ? Sentence.Build(function)
+                : individuals.Length == 1
+                    ? Sentence.Build(function, individuals[0])
+                    : Sentence.Build(function, individuals[0], individuals[1]);
+
+            return World.Knowledge.Exists(sentence);
+        }
+    }
+
+    public class PredefinedPreconditions : Predefined
+    {
+        public PredefinedPreconditions(World world, Roles roles, Historic historic)
+            : base(world, roles, historic)
+        {
         }
 
         public bool MainIs(string name) =>
@@ -79,9 +105,6 @@ namespace Stories
                 && carrier.Carrier.GetCarrieds(World.Items).Back!.Inventory.Has(item);
         }
 
-        public bool HasHappened(string story, params string[] roles) =>
-            Historic.HasHappened(new Snapshot(story, roles.Select(r => this.Roles.Get(r)!.Id)));
-
         public bool MainPlaceIsEnlighted()
         {
             var main = Roles.Get<IWorldAgent>(Descriptor.MainRole);
@@ -105,5 +128,34 @@ namespace Stories
 
             return false;
         }
+    }
+
+    public class PredefinedPostconditions : Predefined
+    {
+        public PredefinedPostconditions(World world, Roles roles, Historic historic)
+            : base(world, roles, historic)
+        {
+        }
+
+        public IWorldAgent Main =>
+            Agent(Descriptor.MainRole);
+
+        public IWorldMapped MainPlace
+        {
+            get
+            {
+                var main = Main;
+                return World.Map.GetUbication(main);
+            }
+        }
+
+        public IWorldAgent Agent(string role) =>
+            Roles.Get<IWorldAgent>(role);
+
+        public IWorldMapped Mapped(string role) =>
+            Roles.Get<IWorldMapped>(role);
+
+        public IWorldItem Item(string role) =>
+            Roles.Get<IWorldItem>(role);
     }
 }

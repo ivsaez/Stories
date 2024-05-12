@@ -12,7 +12,7 @@ using Worlding;
 
 namespace Stories
 {
-    public delegate Output ExecutionFunction(World world, Roles roles);
+    public delegate Output ExecutionFunction(PredefinedPostconditions post);
 
     public class Interaction : Identifiable, IIdentifiable
     {
@@ -57,7 +57,7 @@ namespace Stories
                         Storylet.LowestPriority));
 
 
-        public Output Execute(World world, Roles roles) =>
-            function(world, roles);
+        public Output Execute(PredefinedPostconditions post) =>
+            function(post);
     }
 }

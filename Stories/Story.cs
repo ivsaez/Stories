@@ -10,15 +10,16 @@ namespace Stories
         private readonly Interaction initial;
         private readonly World world;
         private readonly Roles roles;
+        private readonly Historic historic;
 
         private Interaction? actualExecution;
 
-        public Story(Interaction initial, World world, Roles roles)
+        public Story(Interaction initial, World world, Roles roles, Historic historic)
         {
             this.initial = initial;
             this.world = world;
             this.roles = roles;
-  
+            this.historic = historic;
             actualExecution = null;
         }
 
@@ -49,7 +50,7 @@ namespace Stories
             if (actualExecution is null && input.IsVoid)
             {
                 actualExecution = initial;
-                var output = actualExecution.Execute(world, roles);
+                var output = actualExecution.Execute(new PredefinedPostconditions(world, roles, historic));
 
                 return new Step(output, actualExecution.Choices(roles, world.Existents));
             }
@@ -60,7 +61,7 @@ namespace Stories
             var nextExecution = option.Function() as Interaction;
 
             actualExecution = nextExecution;
-            var anotherOutput = actualExecution!.Execute(world, roles);
+            var anotherOutput = actualExecution!.Execute(new PredefinedPostconditions(world, roles, historic));
             return new Step(anotherOutput, actualExecution.Choices(roles, world.Existents));
         }
     }

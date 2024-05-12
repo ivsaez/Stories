@@ -81,7 +81,7 @@ namespace Stories
 
             historic.Add(getSnapshot(roles));
 
-            return new Story(Interaction, world, roles);
+            return new Story(Interaction, world, roles, historic);
         }
 
         public bool MatchesPotentialUser(IAgent agent) =>
