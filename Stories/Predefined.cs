@@ -21,8 +21,32 @@ namespace Stories
             Historic = historic;
         }
 
+        public IWorldAgent Main =>
+            Agent(Descriptor.MainRole);
+
+        public IWorldMapped MainPlace
+        {
+            get
+            {
+                var main = Main;
+                return World.Map.GetUbication(main);
+            }
+        }
+
+        public IWorldAgent Agent(string role) =>
+            Roles.Get<IWorldAgent>(role);
+
+        public IWorldMapped Mapped(string role) =>
+            Roles.Get<IWorldMapped>(role);
+
+        public IWorldItem Item(string role) =>
+            Roles.Get<IWorldItem>(role);
+
         public bool HasHappened(string story, params string[] roles) =>
             Historic.HasHappened(new Snapshot(story, roles.Select(r => Roles.Get(r)!.Id)));
+
+        public bool HasHappenedTimes(uint times, string story, params string[] roles) =>
+            Historic.HasHappenedTimes(new Snapshot(story, roles.Select(r => Roles.Get(r)!.Id)), times);
 
         public bool IsKnown(string function, params string[] individuals)
         {
@@ -51,25 +75,30 @@ namespace Stories
 
         public bool RoleIs(string role, string name)
         {
-            var roleAgent = Roles.Get<IWorldAgent>(role);
+            var roleAgent = Agent(role);
 
             return roleAgent.Name == name;
         }
 
+        public bool PositionIs(string role, string position)
+        {
+            var roleAgent = Agent(role);
+
+            return roleAgent.Position.Machine.CurrentState == position;
+        }
+
         public bool IsExit(string exitRole)
         {
-            var main = Roles.Get<IWorldAgent>(Descriptor.MainRole);
-            var place = World.Map.GetUbication(main);
+            var place = MainPlace;
 
-            var exit = Roles.Get<IWorldMapped>(exitRole);
+            var exit = Mapped(exitRole);
 
             return place.Exits.Has(exit);
         }
 
         public bool EverythingInMainPlace()
         {
-            var main = Roles.Get<IWorldAgent>(Descriptor.MainRole);
-            var place = World.Map.GetUbication(main);
+            var place = MainPlace;
             var items = place.Items.AllAccessible(World.Items);
 
             return Roles.Matchers
@@ -82,9 +111,15 @@ namespace Stories
                 .Cast<IWorldAgent>()
                 .All(agent => agent.Status.Machine.CurrentState == Status.Conscious);
 
+        public bool EveryoneStanding() =>
+            Roles.Matchers
+                .Where(matcher => matcher is IWorldAgent)
+                .Cast<IWorldAgent>()
+                .All(agent => agent.Position.Machine.CurrentState == Position.Standing);
+
         public bool RoleInPlace(string role, string placeRole)
         {
-            var place = Roles.Get<IWorldMapped>(placeRole);
+            var place = Mapped(placeRole);
 
             return matcherIsInPlace(
                 Roles.Get(role)!,
@@ -94,12 +129,12 @@ namespace Stories
 
         public bool RoleOwns(string role, string itemRole)
         {
-            var owner = Roles.Get<IWorldAgent>(role);
+            var owner = Agent(role);
             if (owner is not ICarrier)
                 return false;
 
             var carrier = owner.Cast<ICarrier>();
-            var item = Roles.Get<IWorldItem>(itemRole);
+            var item = Item(itemRole);
 
             return carrier.Carrier.GetCarrieds(World.Items).Back is not null
                 && carrier.Carrier.GetCarrieds(World.Items).Back!.Inventory.Has(item);
@@ -107,8 +142,7 @@ namespace Stories
 
         public bool MainPlaceIsEnlighted()
         {
-            var main = Roles.Get<IWorldAgent>(Descriptor.MainRole);
-            var place = World.Map.GetUbication(main);
+            var place = MainPlace;
 
             return place.IsEnlighted(World.Agents, World.Items, World.Time.IsLight);
         }
@@ -136,26 +170,5 @@ namespace Stories
             : base(world, roles, historic)
         {
         }
-
-        public IWorldAgent Main =>
-            Agent(Descriptor.MainRole);
-
-        public IWorldMapped MainPlace
-        {
-            get
-            {
-                var main = Main;
-                return World.Map.GetUbication(main);
-            }
-        }
-
-        public IWorldAgent Agent(string role) =>
-            Roles.Get<IWorldAgent>(role);
-
-        public IWorldMapped Mapped(string role) =>
-            Roles.Get<IWorldMapped>(role);
-
-        public IWorldItem Item(string role) =>
-            Roles.Get<IWorldItem>(role);
     }
 }
