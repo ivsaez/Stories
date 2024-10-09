@@ -147,6 +147,11 @@ namespace Stories
             return place.IsEnlighted(World.Agents, World.Items, World.Time.IsLight);
         }
 
+        public bool IsHourGreaterThan(int hour)
+        {
+            return World.Time.Hour > hour;
+        }
+
         private bool matcherIsInPlace(IIdentifiable matcher, Mapping.Agents agents, IEnumerable<IWorldItem> items)
         {
             if (matcher is IWorldAgent)
