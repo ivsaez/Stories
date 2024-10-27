@@ -22,7 +22,7 @@ namespace Stories.Builders
             environmentPreconditions = (world) => true;
             preconditions = (pre) => true;
             timing = Timing.Repeteable;
-            potencialUser = PotencialUser.Any;
+            potencialUser = PotencialUser.HumanOrMachine;
             roleScope = RoleScope.Any;
             cost = 1;
             overridePriority = 0;
@@ -71,7 +71,7 @@ namespace Stories.Builders
 
         public StoryletBuilder ForAnyUser()
         {
-            potencialUser = PotencialUser.Any;
+            potencialUser = PotencialUser.HumanOrMachine;
             return this;
         }
 
@@ -84,6 +84,12 @@ namespace Stories.Builders
         public StoryletBuilder ForMachines()
         {
             potencialUser = PotencialUser.Machine;
+            return this;
+        }
+
+        public StoryletBuilder ForNarrator()
+        {
+            potencialUser = PotencialUser.Narrator;
             return this;
         }
 

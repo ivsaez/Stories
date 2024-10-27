@@ -23,25 +23,25 @@ namespace Stories
             actualExecution = null;
         }
 
-        public IAgent Driver
+        public string Driver
         {
             get 
             {
                 if (actualExecution is null)
-                    return roles.Get<IAgent>(initial.Driver);
+                    return initial.Driver;
 
-                return roles.Get<IAgent>(actualExecution.Driver);
+                return actualExecution.Driver;
             }
         } 
 
-        public IAgent Answerer
+        public string Answerer
         {
             get
             {
                 if (actualExecution is null)
-                    return roles.Get<IAgent>(initial.Driver);
+                    return initial.Driver;
 
-                return roles.Get<IAgent>(actualExecution.Answerer);
+                return actualExecution.Answerer;
             }
         }
 

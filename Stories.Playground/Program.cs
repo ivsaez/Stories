@@ -77,12 +77,20 @@ var movement = StoryletBuilder.Create("movement")
     .SetAsRoot()
     .Finish();
 
-var vault = new StoriesVault(storylet, movement);
+var narratorTest = StoryletBuilder.Create("narratorTest")
+    .BeingGlobalSingle()
+    .ForNarrator()
+    .WithInteraction((post) => Output.FromTexts("narratorTest_execution".trans()))
+    .WithDriver(Descriptor.MainRole)
+    .SetAsRoot()
+    .Finish();
+
+var vault = new StoriesVault(storylet, movement, narratorTest);
 var deck = new StoriesDeck();
 deck.IncorporateVault(vault);
 
 var deckSelection = deck.GetValidStories(world, historic);
-var rolledStories = deckSelection.GetValidStories(agent, world, historic);
+var rolledStories = deckSelection.GetValidStories(Narrator.Instance, world, historic);
 
 var choices = rolledStories.Choices(world.Existents);
 
@@ -110,7 +118,7 @@ void ExecuteStory(IStory story)
 {
     var input = Input.Void;
     var step = story.Interact(input);
-    Console.WriteLine($"[{story.Driver.Name}]");
+    Console.WriteLine($"[{story.Driver}]");
     Console.WriteLine(step);
     while (!step.IsEnding)
     {
@@ -119,7 +127,7 @@ void ExecuteStory(IStory story)
         var inputCommand = Console.ReadLine();
         input = new Input(int.Parse(inputCommand!));
         step = story.Interact(input);
-        Console.WriteLine($"[{story.Driver.Name}]");
+        Console.WriteLine($"[{story.Driver}]");
         Console.WriteLine(step);
     }
 }

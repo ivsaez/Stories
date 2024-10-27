@@ -1,6 +1,7 @@
 ﻿using Agents;
 using Contexting;
 using Identification;
+using Mapping;
 using Rolling;
 using Worlding;
 
@@ -34,7 +35,7 @@ namespace Stories
             ParticularPreconditions particularPreconditions,
             Interaction rootInteraction,
             Timing timing = Timing.Repeteable,
-            PotencialUser potencialUser = PotencialUser.Any,
+            PotencialUser potencialUser = PotencialUser.HumanOrMachine,
             RoleScope roleScope = RoleScope.Any,
             uint cost = 1,
             uint overridePriority = 0)
@@ -84,10 +85,24 @@ namespace Stories
             return new Story(Interaction, world, roles, historic);
         }
 
-        public bool MatchesPotentialUser(IAgent agent) =>
-            potencialUser == PotencialUser.Any
-            || (potencialUser == PotencialUser.Human && agent.Actioner == Actioner.Human)
-            || (potencialUser == PotencialUser.Machine && agent.Actioner == Actioner.IA);
+        public bool MatchesPotentialUser(IIdentifiable identifiable)
+        {
+            if(identifiable is Narrator)
+            {
+                var narrator = identifiable as Narrator;
+                return potencialUser == PotencialUser.Narrator;
+            }
+
+            if(identifiable is IAgent)
+            {
+                var agent = identifiable as IAgent;
+                return potencialUser == PotencialUser.HumanOrMachine
+                    || (potencialUser == PotencialUser.Human && agent!.Actioner == Actioner.Human)
+                    || (potencialUser == PotencialUser.Machine && agent!.Actioner == Actioner.IA);
+            }
+
+            throw new ArgumentException("Potential user must be a NArrator or an Agent.");
+        }
 
         public bool MetsHistoricGlobalConditions(Historic historic)
         {
@@ -108,14 +123,14 @@ namespace Stories
             return true;
         }
 
-        public Permutations CalculatePermutations(IAgent main, Context<IWorldAgent, IWorldItem, IWorldMapped> context)
+        public Permutations CalculatePermutations(IIdentifiable mainIdentifiable, Context<IWorldAgent, IWorldItem, IWorldMapped> context)
         {
             var identifiables = roleScope == RoleScope.Items
                 ? context.Items
                 : roleScope == RoleScope.Agents
-                    ? context.Others
+                    ? context.Agents
                     : roleScope == RoleScope.AwakenAgents
-                        ? context.Others
+                        ? context.Agents
                             .OfType<IAgent>()
                             .Where(a => a.Status.Machine.CurrentState == Status.Conscious)
                             .OfType<IIdentifiable>()
@@ -124,7 +139,7 @@ namespace Stories
                             ? context.Destinations
                             : context.All;
 
-            return descriptor.GetPermutations(main, identifiables);
+            return descriptor.GetPermutations(mainIdentifiable, identifiables);
         }
 
         public override string ToString() => Id;

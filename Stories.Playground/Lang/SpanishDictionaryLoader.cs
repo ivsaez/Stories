@@ -29,6 +29,9 @@ namespace Stories.Playground.Lang
 
             new Word("movement_execution", "{0} camina pesadamente hacia {1}"),
 
+            new Word("narratorTest_execution", "El narrador comenta el tiempo"),
+            new Word("narratorTest_1_interaction_description", "El sol cae a plomo, el viento sigue soplando con fuerza"),
+
             new Word("room_name", "habitación"),
         };
     }

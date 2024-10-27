@@ -1,5 +1,6 @@
 ﻿using Agents;
 using Contexting;
+using Identification;
 using Instanciation;
 using Items;
 using Mapping;
@@ -55,28 +56,47 @@ namespace Stories
         }
 
         public RolledStories GetValidStories(
-            IWorldAgent main, 
+            IIdentifiable identifiable, 
             World world,
             Historic historic)
         {
             var selectedStorylets = new RolledStories();
-
-            var context = new Context<IWorldAgent, IWorldItem, IWorldMapped>(main, world.Existents);
+            var context = calculateContext(identifiable, world);
 
             foreach (var storylet in storylets
-                .Where(s => s.MatchesPotentialUser(main)))
+                .Where(s => s.MatchesPotentialUser(identifiable)))
             {
-                var permutations = storylet.CalculatePermutations(main, context);
+                var permutations = storylet.CalculatePermutations(identifiable, context);
 
                 foreach (var roles in permutations.Roles)
                 {
-                    if (storylet.MetsHistoricRolledConditions(historic, roles) 
+                    if (storylet.MetsHistoricRolledConditions(historic, roles)
                         && storylet.ParticularPreconditions(new PredefinedPreconditions(world, roles, historic)))
                         selectedStorylets.Add(storylet, roles);
                 }
             }
 
             return selectedStorylets;
+        }
+
+        private Context<IWorldAgent, IWorldItem, IWorldMapped> calculateContext(IIdentifiable identifiable, World world)
+        {
+            Context<IWorldAgent, IWorldItem, IWorldMapped> context;
+            if (identifiable is IWorldAgent)
+            {
+                context = Context<IWorldAgent, IWorldItem, IWorldMapped>.FromAgent((IWorldAgent)identifiable, world.Existents);
+            }
+            else
+            {
+                var relevantMappeds = world.Map.GetUbicationsWith(Importance.Main, world.Agents);
+                context = Context<IWorldAgent, IWorldItem, IWorldMapped>.FromPlace(relevantMappeds.First(), world.Existents);
+                foreach (var relevantMapped in relevantMappeds.Skip(1))
+                {
+                    context.Add(Context<IWorldAgent, IWorldItem, IWorldMapped>.FromPlace(relevantMapped, world.Existents));
+                }
+            }
+
+            return context;
         }
     }
 

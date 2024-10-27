@@ -5,9 +5,9 @@ namespace Stories
 {
     public interface IStory
     {
-        IAgent Driver { get; }
+        string Driver { get; }
 
-        IAgent Answerer { get; }
+        string Answerer { get; }
 
         Step Interact(Input input);
     }

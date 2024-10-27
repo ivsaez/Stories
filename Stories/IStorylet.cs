@@ -20,9 +20,9 @@ namespace Stories
 
         IStory Execute(World world, Roles roles, Historic historic);
 
-        bool MatchesPotentialUser(IAgent agent);
+        bool MatchesPotentialUser(IIdentifiable identifiable);
 
-        Permutations CalculatePermutations(IAgent main, Context<IWorldAgent, IWorldItem, IWorldMapped> context);
+        Permutations CalculatePermutations(IIdentifiable mainIdentifiable, Context<IWorldAgent, IWorldItem, IWorldMapped> context);
 
         bool MetsHistoricGlobalConditions(Historic historic);
 
@@ -43,9 +43,10 @@ namespace Stories
 
     public enum PotencialUser
     {
-        Any,
+        HumanOrMachine,
         Human,
-        Machine
+        Machine,
+        Narrator
     }
 
     public enum RoleScope
